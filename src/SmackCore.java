@@ -28,58 +28,42 @@ public class SmackCore {
 		int i = 0;
 		for ( ; i < account_number ; i++ ){
 			Connection conn_tmp = new XMPPConnection(this.domain);
+			this.conns.add(conn_tmp);
 			try {
 				conn_tmp.connect();
 				try {
 					conn_tmp.getAccountManager().createAccount( name_prefix + i , name_prefix );
-					//conn_tmp.disconnect();
 				} catch (XMPPException e) {
-					System.out.println( "Warning : test " + i + " is existed!" );
+					System.err.println( "Warning : admin " + i + " is existed!" );
 				}
 			} catch (XMPPException e1) {
-				System.err.println("Warning : Can not connected!");
+				System.err.println("Warning : can not connected!");
 			}
 		}
 	}
 	public void deleteAccounts(){
 		int i = 0;
-		for ( ; i< account_number ; i++ ){
-			Connection conn_tmp = new XMPPConnection(this.domain);
+		for ( Connection conn_tmp : this.conns ){
 			try {
-				conn_tmp.connect();
-				try {
-					conn_tmp.login( this.name_prefix + i , this.name_prefix );
-					try {
-						conn_tmp.getAccountManager().deleteAccount();
-					} catch (XMPPException e_delete) {
-						System.err.println("Warning : Can not deleted!");
-					}
-					conn_tmp.disconnect();
-				} catch (XMPPException e_login) {
-					System.err.println("Warning : Can not login!");
-				}
-			} catch (XMPPException e_connect) {
-				System.err.println("Warning : Can not connected!");
+				conn_tmp.getAccountManager().deleteAccount();
+			} catch (XMPPException e_delete) {
+				System.err.println("Warning : admin " + i + " can not be deleted!");
 			}
+			conn_tmp.disconnect();
+			i++;
 		}
 	}
 	public void createListeners(){
 		int i = 0;
-		for ( ; i< account_number ; i++ ){
-			Connection conn_tmp = new XMPPConnection(this.domain);
+		for ( Connection conn_tmp : this.conns ){
 			try {
-				conn_tmp.connect();
-				try {
-					conn_tmp.login( this.name_prefix + i , this.name_prefix );
-					subscriptionListener thisSubscriptionListener = new subscriptionListener(conn_tmp);
-					thisSubscriptionListener.addRosterListener();
-					this.conns.add(conn_tmp);
-				} catch (XMPPException e_login) {
-					System.err.println("Warning : Can not login!");
-				}
-			} catch (XMPPException e_connect) {
-				System.err.println("Warning : Can not connected!");
+				conn_tmp.login( this.name_prefix + i , this.name_prefix );
+				subscriptionListener thisSubscriptionListener = new subscriptionListener(conn_tmp);
+				thisSubscriptionListener.addRosterListener();
+			} catch (XMPPException e_login) {
+				System.err.println("Warning : can not login!");
 			}
+			i++;
 		}
 	}
 	public void disconnectListeners(){

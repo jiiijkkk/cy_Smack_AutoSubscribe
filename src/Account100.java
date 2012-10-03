@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Account100 {
-	private static String domain = "192.168.200.16";
+	private static String domain = "192.168.200.10";
 	private int account_number;
 	private static String name_prefix = "admin";
 	
@@ -33,21 +33,19 @@ public class Account100 {
 		
 		pause();
 		
-		System.out.println("Disconnecting " + this.account_number + " listeners");
-		this.core.disconnectListeners();
-		System.out.println( account_number + " listener disconnected!");
-		
 		System.out.println("Deleting " + this.account_number + " accounts...");
 		this.core.deleteAccounts();
 		System.out.println( account_number + " accounts deleted!");
 		
+		System.out.println("Disconnecting " + this.account_number + " listeners...");
+		this.core.disconnectListeners();
+		System.out.println( account_number + " listener disconnected!");
+		
 		System.out.println("Exit!");
 	}
 	public static void pause(){
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Press the enter key to continue");
+		scanner.nextLine();
 	}
 }
